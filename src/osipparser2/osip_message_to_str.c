@@ -23,6 +23,7 @@
 #include <osipparser2/osip_parser.h>
 
 #define MIME_MAX_BOUNDARY_LEN 70
+#define CONTENT_LENGTH_DECIMAL_WIDTH (3 * sizeof(size_t))
 
 extern const char *osip_protocol_version;
 
@@ -515,7 +516,7 @@ static int _osip_message_to_str(osip_message_t *sip, char **dest, size_t *messag
   /* we have to create the body before adding the contentlength */
   /* add enough lenght for "Content-Length: " */
 
-  if (_osip_message_realloc(&message, dest, 16, &malloc_size) < 0)
+  if (_osip_message_realloc(&message, dest, 16 + CONTENT_LENGTH_DECIMAL_WIDTH + 4, &malloc_size) < 0)
     return OSIP_NOMEM;
 
   if (sipfrag && osip_list_eol(&sip->bodies, 0)) {
@@ -565,7 +566,9 @@ static int _osip_message_to_str(osip_message_t *sip, char **dest, size_t *messag
      */
 
     content_length_to_modify = message;
-    message = osip_str_append(message, "     ");
+    memset(message, ' ', CONTENT_LENGTH_DECIMAL_WIDTH);
+    message += CONTENT_LENGTH_DECIMAL_WIDTH;
+    *message = '\0';
   }
 
   /*  } */
@@ -721,12 +724,18 @@ static int _osip_message_to_str(osip_message_t *sip, char **dest, size_t *messag
   /* we NOW have the length of bodies: */
   {
     size_t size = message - start_of_bodies;
-    char tmp2[15];
+    char tmp2[CONTENT_LENGTH_DECIMAL_WIDTH + 1];
+    int digits;
 
     total_length += size;
-    snprintf(tmp2, 15, "%i", (int) size);
+    digits = snprintf(tmp2, sizeof(tmp2), "%zu", size);
+    if (digits <= 0 || (size_t) digits > CONTENT_LENGTH_DECIMAL_WIDTH) {
+      osip_free(*dest);
+      *dest = NULL;
+      return OSIP_SYNTAXERROR;
+    }
     /* do not use osip_strncpy here! */
-    memcpy(content_length_to_modify + 5 - strlen(tmp2), tmp2, strlen(tmp2));
+    memcpy(content_length_to_modify + CONTENT_LENGTH_DECIMAL_WIDTH - (size_t) digits, tmp2, (size_t) digits);
   }
 
   /* same remark as at the beginning of the method */

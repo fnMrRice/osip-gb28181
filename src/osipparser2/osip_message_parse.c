@@ -901,6 +901,29 @@ static int _osip_message_parse(osip_message_t *sip, const char *buf, size_t leng
 
   tmp = (char *) next_header_index;
 
+  /* A complete message must contain exactly its declared number of body bytes.
+     Do not silently accept trailing messages, truncation, signs or overflow. */
+  if (!sipfrag && sip->content_length != NULL && sip->content_length->value != NULL) {
+    const unsigned char *digit = (const unsigned char *) sip->content_length->value;
+    const char *body = tmp;
+    size_t declared = 0;
+    if (*digit == '\0') { osip_free(beg); return OSIP_SYNTAXERROR; }
+    while (*digit != '\0') {
+      size_t value;
+      if (*digit < '0' || *digit > '9') { osip_free(beg); return OSIP_SYNTAXERROR; }
+      value = (size_t) (*digit++ - '0');
+      if (declared > ((size_t) -1 - value) / 10) { osip_free(beg); return OSIP_SYNTAXERROR; }
+      declared = declared * 10 + value;
+    }
+    if (body[0] == '\r' && body[1] == '\n') body += 2;
+    else if (body[0] == '\n') ++body;
+    else { osip_free(beg); return OSIP_SYNTAXERROR; }
+    if ((size_t) (body - beg) > length || declared != length - (size_t) (body - beg)) {
+      osip_free(beg);
+      return OSIP_SYNTAXERROR;
+    }
+  }
+
   if (sip->content_length != NULL && sip->content_length->value == NULL) {
     /* empty content_length header */
     osip_content_length_free(sip->content_length);

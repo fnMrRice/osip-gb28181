@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -151,6 +151,7 @@
     <ClCompile Include="..\..\..\osip\src\osipparser2\osip_allow.c" />
     <ClCompile Include="..\..\..\osip\src\osipparser2\osip_authentication_info.c" />
     <ClCompile Include="..\..\..\osip\src\osipparser2\osip_authorization.c" />
+    <ClCompile Include="..\..\..\osip\src\osipparser2\osip_auth_param.c" />
     <ClCompile Include="..\..\..\osip\src\osipparser2\osip_body.c" />
     <ClCompile Include="..\..\..\osip\src\osipparser2\osip_call_id.c" />
     <ClCompile Include="..\..\..\osip\src\osipparser2\osip_call_info.c" />

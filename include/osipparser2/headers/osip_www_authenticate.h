@@ -20,6 +20,9 @@
 #ifndef _OSIP_WWW_AUTHENTICATE_H_
 #define _OSIP_WWW_AUTHENTICATE_H_
 
+#include <osipparser2/osip_list.h>
+#define OSIP_AUTH_PARAMS_API 1
+
 /**
  * @file osip_www_authenticate.h
  * @brief oSIP osip_www_authenticate header definition.
@@ -53,7 +56,8 @@ struct osip_www_authenticate {
   char *version;     /**< version (optional - NTLM) */
   char *targetname;  /**< targetname (optional - NTLM) */
   char *gssapi_data; /**< gssapi-data (optional - NTLM) */
-  char *auth_param;  /**< other parameters (optional) */
+  osip_list_t auth_params; /**< Unknown authentication parameters with raw quoted/token values. */
+  char *auth_param;  /**< Opaque Basic/NTLM/Negotiate token68 credentials. */
 };
 
 #ifdef __cplusplus
@@ -88,6 +92,9 @@ void osip_www_authenticate_free(osip_www_authenticate_t *header);
  * @param dest A pointer on the copy of the element.
  */
 int osip_www_authenticate_clone(const osip_www_authenticate_t *header, osip_www_authenticate_t **dest);
+
+/** Get a known or extension parameter (case insensitive), retaining wire quotes. */
+const char *osip_www_authenticate_get_param(const osip_www_authenticate_t *header, const char *name);
 
 /**
  * Get value of the auth_type parameter from a Www-Authenticate element.
@@ -233,3 +240,4 @@ void osip_www_authenticate_set_gssapi_data(osip_www_authenticate_t *header, char
 /** @} */
 
 #endif
+

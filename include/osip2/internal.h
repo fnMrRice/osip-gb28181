@@ -49,6 +49,9 @@
 
 #elif defined(WIN32)
 
+#include <winsock2.h>
+#define HAVE_STRUCT_TIMEVAL 1
+
 #define HAVE_CTYPE_H 1
 #define HAVE_STRING_H 1
 #define HAVE_SYS_TYPES_H 1

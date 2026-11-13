@@ -185,7 +185,7 @@ int parser_init(void) {
   pconfig[i++].setheader = (&osip_message_set_authentication_info);
 #endif
   pconfig[i].hname = AUTHORIZATION;
-  pconfig[i].ignored_when_invalid = 1;
+  pconfig[i].ignored_when_invalid = 0;
   pconfig[i++].setheader = (&osip_message_set_authorization);
   pconfig[i].hname = CONTENT_TYPE_SHORT; /* "l" */
   pconfig[i].ignored_when_invalid = 0;
@@ -242,7 +242,7 @@ int parser_init(void) {
   pconfig[i].ignored_when_invalid = 1;
   pconfig[i++].setheader = (&osip_message_set_mime_version);
   pconfig[i].hname = PROXY_AUTHENTICATE;
-  pconfig[i].ignored_when_invalid = 1;
+  pconfig[i].ignored_when_invalid = 0;
   pconfig[i++].setheader = (&osip_message_set_proxy_authenticate);
 #ifndef MINISIZE
   pconfig[i].hname = PROXY_AUTHENTICATION_INFO;
@@ -250,7 +250,7 @@ int parser_init(void) {
   pconfig[i++].setheader = (&osip_message_set_proxy_authentication_info);
 #endif
   pconfig[i].hname = PROXY_AUTHORIZATION;
-  pconfig[i].ignored_when_invalid = 1;
+  pconfig[i].ignored_when_invalid = 0;
   pconfig[i++].setheader = (&osip_message_set_proxy_authorization);
   pconfig[i].hname = RECORD_ROUTE;
   pconfig[i].ignored_when_invalid = 1; /* best effort - but should be 0 */
@@ -271,7 +271,7 @@ int parser_init(void) {
   pconfig[i].ignored_when_invalid = 0;
   pconfig[i++].setheader = (&osip_message_set_via);
   pconfig[i].hname = WWW_AUTHENTICATE;
-  pconfig[i].ignored_when_invalid = 1;
+  pconfig[i].ignored_when_invalid = 0;
   pconfig[i++].setheader = (&osip_message_set_www_authenticate);
 
   /* build up hash table for fast header lookup */
@@ -367,3 +367,5 @@ int __osip_message_call_method(int i, osip_message_t *dest, const char *hvalue) 
 
   return err;
 }
+
+

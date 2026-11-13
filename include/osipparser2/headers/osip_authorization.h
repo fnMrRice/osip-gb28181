@@ -20,6 +20,9 @@
 #ifndef _OSIP_AUTHORIZATION_H_
 #define _OSIP_AUTHORIZATION_H_
 
+#include <osipparser2/osip_list.h>
+#define OSIP_AUTH_PARAMS_API 1
+
 /**
  * @file osip_authorization.h
  * @brief oSIP osip_authorization header definition.
@@ -59,7 +62,8 @@ struct osip_authorization {
   char *gssapi_data; /**< gssapi-data (optional - NTLM) */
   char *crand;       /**< crand (optional - NTLM) */
   char *cnum;        /**< cnum (optional - NTLM) */
-  char *auth_param;  /**< other parameters (optionnal) */
+  osip_list_t auth_params; /**< Unknown authentication parameters with raw quoted/token values. */
+  char *auth_param;  /**< Opaque Basic/NTLM/Negotiate token68 credentials. */
 };
 
 #ifdef __cplusplus
@@ -94,6 +98,9 @@ void osip_authorization_free(osip_authorization_t *header);
  * @param dest A pointer on the copy of the element.
  */
 int osip_authorization_clone(const osip_authorization_t *header, osip_authorization_t **dest);
+
+/** Get a known or extension parameter (case insensitive), retaining wire quotes. */
+const char *osip_authorization_get_param(const osip_authorization_t *header, const char *name);
 
 /**
  * Get value of the auth_type parameter from a Authorization element.
@@ -290,3 +297,4 @@ void osip_authorization_set_cnum(osip_authorization_t *header, char *value);
 /** @} */
 
 #endif
+

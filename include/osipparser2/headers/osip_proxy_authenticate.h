@@ -39,6 +39,8 @@
  */
 typedef osip_www_authenticate_t osip_proxy_authenticate_t;
 
+#define osip_proxy_authenticate_get_param osip_www_authenticate_get_param
+
 #ifdef __cplusplus
 extern "C" {
 #endif

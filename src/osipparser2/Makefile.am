@@ -1,9 +1,9 @@
 
-EXTRA_DIST = parser.h
+EXTRA_DIST = parser.h osip_auth_param.h
 
 lib_LTLIBRARIES = libosipparser2.la
 
-libosipparser2_la_SOURCES= osip_proxy_authorization.c \
+libosipparser2_la_SOURCES= osip_proxy_authorization.c osip_auth_param.c \
 osip_cseq.c                osip_record_route.c        \
 osip_route.c               osip_to.c                  \
 osip_from.c                osip_uri.c                 \

@@ -39,6 +39,8 @@
  */
 typedef osip_authorization_t osip_proxy_authorization_t;
 
+#define osip_proxy_authorization_get_param osip_authorization_get_param
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -1,3 +1,7 @@
+libosip2 (5.3.2) - 2026-07-23
+	* fix bug report: Fixed a potential out-of-bounds read when parsing malformed SDP data.
+	  The result is never used so the confidentiality impact is NONE. Low probability of crash.
+
 libosip2 (5.3.1) - 2022-10-12
 	* fix bug #63103: [CVE-2022-41550] in multipart bodies, LWS can't exist
 

@@ -198,8 +198,13 @@ int osip_strncasecmp(const char *s1, const char *s2, size_t len);
 
 #else
 #define osip_atoi atoi
+#if defined(WIN32) || defined(_WIN32_WCE)
+#define osip_strcasecmp _stricmp
+#define osip_strncasecmp _strnicmp
+#else
 #define osip_strcasecmp strcasecmp
 #define osip_strncasecmp strncasecmp
+#endif
 #endif
 
 char *osip_strcasestr(const char *haystack, const char *needle);

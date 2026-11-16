@@ -12,6 +12,8 @@
 You can check www.gnu.org for more information about
 being part of the "GNU project".
 
+For CMake builds and installed-package use, see docs/BUILDING.md.
+
 For information, look at:
    INSTALL
    HISTORY

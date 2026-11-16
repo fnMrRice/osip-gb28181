@@ -30,7 +30,7 @@ configure
 libosip2.pc
 libtool
 osip-config.h
-osip-config.h.in
+/osip-config.h.in
 scripts/config.guess
 scripts/config.sub
 scripts/depcomp
@@ -43,3 +43,10 @@ scripts/ltversion.m4
 scripts/lt~obsolete.m4
 stamp-h1
 doxygen.dox
+
+# Out-of-source CMake and vcpkg artifacts.
+/build/
+/cmake-build-*/
+/vcpkg_installed/
+/CMakeUserPresets.json
+/.idea/

@@ -1,0 +1,11 @@
+prefix=${pcfiledir}/@OSIP_PC_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: libosip2
+Description: GNU oSIP parser and transaction engine
+Version: @PROJECT_VERSION@
+Libs: -L${libdir} -losip2 -losipparser2
+Libs.private: @OSIP_PC_LIBS_PRIVATE@
+Cflags: -I${includedir}@OSIP_PC_CFLAGS@

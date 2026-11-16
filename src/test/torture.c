@@ -25,33 +25,37 @@
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_parser.h>
 #include <osipparser2/sdp_message.h>
+#include <errno.h>
+#include <limits.h>
 
-int test_message(char *msg, size_t len, int verbose, int clone, int perf);
+int test_message(char* msg, size_t len, int verbose, int clone, int perf);
 static void usage(void);
 
 static void usage() {
-  fprintf(stderr, "Usage: ./torture_test torture_file [-v (verbose)] [-c (clone)] [-p (performance: loop 100.000]\n");
+  fprintf(stderr, "Usage: ./torture_test torture_file [-v (verbose)] [-c (clone)] [-p (performance: loop 100.000)] [-e expected_error]\n");
   exit(1);
 }
 
-static int read_binary(char **msg, int *len, FILE *torture_file) {
-  *msg = (char *) osip_malloc(100001); /* msg are under 100000 */
+static int read_binary(char** msg, int* len, FILE* torture_file) {
+  *msg = (char*) osip_malloc(100001); /* msg are under 100000 */
 
   *len = fread(*msg, 1, 100000, torture_file);
   return ferror(torture_file) ? -1 : 0;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   int success = 1;
   int loop = 1;
   int verbose = 0; /* 1: verbose, 0 (or nothing: not verbose) */
   int clone = 0;   /* 1: verbose, 0 (or nothing: not verbose) */
-  FILE *torture_file;
-  char *msg;
-  char *ptr;
+  FILE* torture_file;
+  char* msg;
+  char* ptr;
   int pos;
   int len;
   int expected_error = OSIP_SUCCESS;
+  int expected_error_override = OSIP_SUCCESS;
+  int have_expected_error_override = 0;
 
   for (pos = 2; pos < argc; pos++) {
     if (0 == strncmp(argv[pos], "-v", 2))
@@ -63,7 +67,21 @@ int main(int argc, char **argv) {
     else if (0 == strncmp(argv[pos], "-p", 2))
       loop = 100000;
 
-    else
+    else if (strcmp(argv[pos], "-e") == 0) {
+      char* end;
+      long value;
+
+      if (pos + 1 >= argc)
+        usage();
+
+      errno = 0;
+      value = strtol(argv[++pos], &end, 10);
+      if (errno == ERANGE || end == argv[pos] || *end != '\0' || value < INT_MIN || value > INT_MAX)
+        usage();
+
+      expected_error_override = (int) value;
+      have_expected_error_override = 1;
+    } else
       usage();
   }
 
@@ -71,7 +89,7 @@ int main(int argc, char **argv) {
     usage();
   }
 
-  torture_file = fopen(argv[1], "r");
+  torture_file = fopen(argv[1], "rb");
 
   if (torture_file == NULL) {
     usage();
@@ -103,6 +121,9 @@ int main(int argc, char **argv) {
     }
   }
 
+  if (have_expected_error_override)
+    expected_error = expected_error_override;
+
   success = test_message(ptr, len, verbose, clone, loop);
 
   if (verbose) {
@@ -118,22 +139,13 @@ int main(int argc, char **argv) {
 
   osip_free(msg);
   fclose(torture_file);
-#ifdef __linux
-
-  if (success != expected_error)
-    exit(EXIT_FAILURE);
-
-  else
-    exit(EXIT_SUCCESS);
-
-#endif
-  return success;
+  return success == expected_error ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
-int test_message(char *msg, size_t len, int verbose, int clone, int perf) {
-  osip_message_t *sip;
+int test_message(char* msg, size_t len, int verbose, int clone, int perf) {
+  osip_message_t* sip;
   int err = 0;
-  char *result;
+  char* result;
 
   int j = perf;
 
@@ -169,7 +181,7 @@ int test_message(char *msg, size_t len, int verbose, int clone, int perf) {
   } else {
     size_t length;
 
-#if 0
+#if 1
     sdp_message_t *sdp;
     osip_body_t *oldbody;
     int pos;

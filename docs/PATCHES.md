@@ -1,11 +1,7 @@
 # oSIP local patches
 
-Base: official GNU oSIP `master`, commit
-`e2cd483bb668f47e089ee3be9df035ff3281b4af` (2026-07-20), obtained using
-`git clone https://git.savannah.gnu.org/git/osip.git`.
-The upstream configure metadata still reports 5.3.1. This checkout follows the
-latest official default-branch revision verified on 2026-11-13, rather than an
-older release archive.
+Base: official GNU oSIP **5.3.2** release. The archive, SHA256, Git ancestor,
+and imported release files are recorded in `ORIGIN.md`.
 
 ## Authentication parameters
 
@@ -43,4 +39,19 @@ avoiding an underflow when a Catalog body exceeds 99,999 bytes.
 The two internal platform headers include winsock2 before Windows headers,
 providing timeval even with WIN32_LEAN_AND_MEAN and OSIP_MONOTHREAD.
 
-All changes retain the upstream LGPL-2.1-or-later license. No upstream Autotools test run is implied.
+## CMake and platform integration
+
+The standalone CMake build exposes separate parser and transaction libraries,
+with static/shared, monothread, minisize, trace, and installation options.
+`OSIP_MONOTHREAD`, `MINISIZE`, and trace settings propagate to consumers through
+exported targets. Build instructions are in `BUILDING.md`.
+
+Windows minisize maps case-insensitive string comparisons to the same CRT
+functions used by the full build. The upstream test driver reads wire messages
+in binary mode and reports matching expectations consistently across platforms.
+Its explicit error override lets the existing strict framing/authentication
+patches retain their rejection contract against upstream's permissive fixtures.
+
+All changes retain the upstream LGPL-2.1-or-later license. CMake validation uses
+Debug builds on Windows/MSVC and Linux/GCC, including installed-package consumers.
+The Autotools build has not been revalidated in this change.

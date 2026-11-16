@@ -1,0 +1,2 @@
+# SIP fixtures retain exact wire bytes, including line endings and whitespace.
+src/test/res/* -text -whitespace

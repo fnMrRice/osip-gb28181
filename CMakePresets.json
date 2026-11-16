@@ -1,0 +1,49 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "Debug-native",
+      "displayName": "Debug with upstream tests",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "OSIP_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "Release-native",
+      "displayName": "Release libraries",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "Debug-native",
+      "configurePreset": "Debug-native"
+    },
+    {
+      "name": "Release-native",
+      "configurePreset": "Release-native"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "Debug-native",
+      "configurePreset": "Debug-native",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}
